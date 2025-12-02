@@ -6,24 +6,41 @@ menuconfig RT_USING_OFW
     select RT_USING_MEMBLOCK
     depends on RT_USING_DM
     default n
+    help
+      Enable the Open Firmware/device-tree parser so BSPs can describe hardware
+      via DTS/DTB files instead of static tables. Required by most DM-based
+      drivers on complex SoCs; disable only if your platform uses hard-coded
+      peripheral descriptions.
 
 config RT_USING_BUILTIN_FDT
     bool "Using builtin fdt in kernel"
     depends on RT_USING_OFW
     default n
+    help
+      Embed a DTB blob directly into the kernel image and use it when no
+      external device tree is supplied by the bootloader.
 
 config RT_BUILTIN_FDT_PATH
     string "Builtin fdt path, will rebuild if have dts"
     depends on RT_USING_BUILTIN_FDT
     default "rtthread.dtb"
+    help
+      Path (relative to the build tree) of the DTB to embed when builtin FDT is
+      enabled. Changing it triggers a rebuild so the new blob is packaged.
 
 config RT_FDT_EARLYCON_MSG_SIZE
     int "Earlycon message buffer size (KB)"
     depends on RT_USING_OFW
     default 128
+    help
+      Size of the ring buffer used by the earlycon driver to store boot logs
+      before the regular console is ready. Increase to keep more boot messages.
 
 config RT_USING_OFW_BUS_RANGES_NUMBER
     int "Max bus ranges number"
     depends on RT_USING_OFW
     default 8 if ARCH_CPU_64BIT
     default 4
+    help
+      Maximum number of `ranges` entries parsed per bus node. Raise this if your
+      device tree uses many address translations; lower it to save RAM.
